@@ -6,11 +6,11 @@ using Models.Entities;
 
 namespace EFContext
 {
-    public class EFContext : KeyApiAuthorizationDbContext<User, Role, int>
+    public class EFDbContext : KeyApiAuthorizationDbContext<User, Role, int>
     {
         private readonly string _connectinString;
-        public EFContext(
-            DbContextOptions<EFContext> options,
+        public EFDbContext(
+            DbContextOptions<EFDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions,
             IConfiguration configuration) : base(options, operationalStoreOptions)
         {

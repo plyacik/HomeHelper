@@ -1,3 +1,4 @@
+using EFContext;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,18 +22,22 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = _configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<EFContext.EFContext>(options =>
+            services.AddDbContext<EFDbContext>(options =>
             options.UseSqlServer(connection,
-                opts => opts.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                opts =>
+                {
+                    opts.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    opts.MigrationsAssembly("Web");
+                })
             );
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<Models.Entities.User>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<EFContext.EFContext>();
+                .AddEntityFrameworkStores<EFDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<Models.Entities.User, EFContext.EFContext>();
+                .AddApiAuthorization<Models.Entities.User, EFDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
